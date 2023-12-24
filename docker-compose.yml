@@ -1,6 +1,6 @@
 version : "3.3"
 services :
   web :
-     image : salmanat2/note-app:latest
+     image : salmanat2/my-note-app
      ports :
          - "8000:8000"
