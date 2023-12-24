@@ -1,35 +1,36 @@
 pipeline {
-    agent any 
+    agent any
     
-    stages{
-        stage("Clone Code"){
-            steps {
-                echo "Cloning the code"
-                git url:"https://github.com/LondheShubham153/django-notes-app.git", branch: "main"
+    stages {
+        stage("code"){
+            steps{
+                echo "code clone"
+                git url:"https://github.com/salman6898/django-notes-app.git", branch:"main"
             }
         }
         stage("Build"){
-            steps {
-                echo "Building the image"
-                sh "docker build -t my-note-app ."
+            steps{
+                echo "building the image"
+                sh "docker build -t mynote-app ."
             }
         }
-        stage("Push to Docker Hub"){
-            steps {
-                echo "Pushing the image to docker hub"
-                withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
-                sh "docker tag my-note-app ${env.dockerHubUser}/my-note-app:latest"
+        stage("Push to dockerhub"){
+            steps{
+                echo "push to docker hub"
+                withCredentials([usernamePassword(credentialsId:"DockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
+                sh "docker tag mynote-app ${env.dockerHubUser}/my-note-app:latest"
                 sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
                 sh "docker push ${env.dockerHubUser}/my-note-app:latest"
                 }
+                
             }
         }
         stage("Deploy"){
-            steps {
-                echo "Deploying the container"
+            steps{
+                echo "deploying the container"
                 sh "docker-compose down && docker-compose up -d"
                 
             }
         }
-    }
+    }    
 }
